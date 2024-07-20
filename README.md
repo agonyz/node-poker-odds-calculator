@@ -11,7 +11,7 @@ Forked from: https://github.com/rundef/node-poker-odds-calculator
 ## Installation
 
 ```bash
-npm install poker-odds-calculator
+npm install @agonyz/poker-odds-calculator
 ```
 
 ## Console Usage
