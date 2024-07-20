@@ -5,7 +5,7 @@
  * (typically either a player's hand, or the shared board)
  */
 import * as _ from 'lodash';
-import {Card} from './Card';
+import { Card } from './Card';
 
 export class CardGroup extends Array {
   public constructor() {
@@ -46,12 +46,14 @@ export class CardGroup extends Array {
     return '' + this.join(' ');
   }
 
-  public sortCards(cardType: string): void {
-    const sorted: Card[]  = _.orderBy(this, ['rank', 'suit'], [cardType, cardType]);
+  public sortCards(cardType: 'asc' | 'desc'): void {
+    const sorted: Card[] = _.orderBy(
+      this,
+      ['rank', 'suit'],
+      [cardType, cardType],
+    );
     /* tslint:disable:no-any */
-    this.splice.apply(this, (<any[]> [ 0, this.length ]).concat(
-      sorted
-    ));
+    this.splice.apply(this, (<any[]>[0, this.length]).concat(sorted));
   }
 
   public concat(cardgroup: CardGroup): CardGroup {
@@ -65,7 +67,7 @@ export class CardGroup extends Array {
     return ret;
   }
 
-  public countBy(cardType: string): {[x: string]: number}  {
+  public countBy(cardType: string): { [x: string]: number } {
     return _.countBy(this, cardType);
   }
 }

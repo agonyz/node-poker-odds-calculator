@@ -3,13 +3,19 @@
  * (Focused on Tie scenarios)
  */
 import { expect } from 'chai';
-import { CardGroup, OddsCalculator } from '../src/index';
+import { CardGroup, OddsCalculator } from '../src';
 
 describe('OddsCalculator (ties)', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AsAc');
     const player2Cards: CardGroup = CardGroup.fromString('AhAd');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, undefined, 10000);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      undefined,
+      undefined,
+      undefined,
+      10000,
+    );
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -36,7 +42,13 @@ describe('OddsCalculator (ties)', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AsAc');
     const player2Cards: CardGroup = CardGroup.fromString('AhAd');
     const player3Cards: CardGroup = CardGroup.fromString('KsKc');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], undefined, undefined, 10000);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards, player3Cards],
+      undefined,
+      undefined,
+      undefined,
+      10000,
+    );
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -73,7 +85,10 @@ describe('OddsCalculator (ties)', () => {
     const player2Cards: CardGroup = CardGroup.fromString('6h5h');
     const player3Cards: CardGroup = CardGroup.fromString('8h8d');
     const board: CardGroup = CardGroup.fromString('4s7s8c2c');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards, player3Cards],
+      board,
+    );
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -110,7 +125,10 @@ describe('OddsCalculator (ties)', () => {
     const player2Cards: CardGroup = CardGroup.fromString('6h5h');
     const player3Cards: CardGroup = CardGroup.fromString('8h8d');
     const board: CardGroup = CardGroup.fromString('4s7s8c');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards, player3Cards],
+      board,
+    );
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();

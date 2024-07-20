@@ -2,7 +2,7 @@
  * Tests for CardGroup class
  */
 import { expect } from 'chai';
-import { Card, CardGroup, Rank, Suit } from '../src/index';
+import { Card, CardGroup, Rank, Suit } from '../src';
 
 describe('CardGroup', () => {
   describe('fromString()', () => {
@@ -27,15 +27,16 @@ describe('CardGroup', () => {
     });
 
     it('throws exception', () => {
-      expect(CardGroup.fromString.bind(null, 'Jhh')).to.throw(Error, 'Invalid cards: Jhh');
+      expect(CardGroup.fromString.bind(null, 'Jhh')).to.throw(
+        Error,
+        'Invalid cards: Jhh',
+      );
     });
   });
 
   describe('toString()', () => {
     it('formats correctly', () => {
-      const strings: string[] = [
-        'Ac 4d Th', 'Jh Qs'
-      ];
+      const strings: string[] = ['Ac 4d Th', 'Jh Qs'];
       for (const s of strings) {
         expect(CardGroup.fromString(s).toString()).to.equal(s);
       }

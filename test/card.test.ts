@@ -2,7 +2,7 @@
  * Tests for Card class
  */
 import { expect } from 'chai';
-import { Card, Rank, Suit } from '../src/index';
+import { Card, Rank, Suit } from '../src';
 
 describe('Card', () => {
   describe('fromString()', () => {
@@ -25,17 +25,24 @@ describe('Card', () => {
     });
 
     it('throws exception', () => {
-      expect(Card.fromString.bind(null, 'Jhh')).to.throw(Error, 'Invalid card: Jhh');
-      expect(Card.fromString.bind(null, '1h')).to.throw(Error, 'Invalid card rank: 1');
-      expect(Card.fromString.bind(null, 'Jx')).to.throw(Error, 'Invalid card suit: x');
+      expect(Card.fromString.bind(null, 'Jhh')).to.throw(
+        Error,
+        'Invalid card: Jhh',
+      );
+      expect(Card.fromString.bind(null, '1h')).to.throw(
+        Error,
+        'Invalid card rank: 1',
+      );
+      expect(Card.fromString.bind(null, 'Jx')).to.throw(
+        Error,
+        'Invalid card suit: x',
+      );
     });
   });
 
   describe('toString()', () => {
     it('formats correctly', () => {
-      const strings: string[] = [
-        'Ac', '4d', 'Th', 'Jh', 'Qs', 'Kd', '2s'
-      ];
+      const strings: string[] = ['Ac', '4d', 'Th', 'Jh', 'Qs', 'Kd', '2s'];
       for (const s of strings) {
         expect(Card.fromString(s).toString()).to.equal(s);
       }

@@ -3,7 +3,7 @@
  */
 import { expect } from 'chai';
 import * as _ from 'lodash';
-import { CardGroup, HandEquity, HandRank, OddsCalculator } from '../src/index';
+import { CardGroup, HandEquity, HandRank, OddsCalculator } from '../src';
 
 describe('OddsCalculator', () => {
   it('should throw exception if board has 1 or 2 cards', () => {
@@ -11,13 +11,15 @@ describe('OddsCalculator', () => {
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
     let board: CardGroup = CardGroup.fromString('2d,Kd');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'The board must contain 0, 3, 4 or 5 cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'The board must contain 0, 3, 4 or 5 cards');
 
     board = CardGroup.fromString('2d');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'The board must contain 0, 3, 4 or 5 cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'The board must contain 0, 3, 4 or 5 cards');
   });
 
   it('should throw exception if there are duplicate card', () => {
@@ -25,43 +27,51 @@ describe('OddsCalculator', () => {
     let player2Cards: CardGroup = CardGroup.fromString('AcAd');
     let board: CardGroup = CardGroup.fromString('2d,Kd,4s');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'Detected duplicate cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'Detected duplicate cards');
 
     player1Cards = CardGroup.fromString('AcAh');
     player2Cards = CardGroup.fromString('3d,4d');
     board = CardGroup.fromString('2d,Kd,Ac');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'Detected duplicate cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'Detected duplicate cards');
 
     player1Cards = CardGroup.fromString('AhAh');
     player2Cards = CardGroup.fromString('AcAd');
     board = CardGroup.fromString('2d,Kd,4s');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'Detected duplicate cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'Detected duplicate cards');
 
     player1Cards = CardGroup.fromString('3d,4d');
     player2Cards = CardGroup.fromString('JcJc');
     board = CardGroup.fromString('2d,Kd,Ac');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'Detected duplicate cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'Detected duplicate cards');
 
     player1Cards = CardGroup.fromString('AdAh');
     player2Cards = CardGroup.fromString('3d,4d');
     board = CardGroup.fromString('2d,Ac,Ac');
 
-    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
-      .to.throw(Error, 'Detected duplicate cards');
+    expect(
+      OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board),
+    ).to.throw(Error, 'Detected duplicate cards');
   });
 
   it('full board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('5d6d');
     const player2Cards: CardGroup = CardGroup.fromString('4h4c');
     const board: CardGroup = CardGroup.fromString('3d,4d,7d,4s,Ts');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], board);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+    );
 
     expect(result.equities[0].getEquity()).to.equal(100);
     expect(result.equities[1].getEquity()).to.equal(0);
@@ -71,7 +81,10 @@ describe('OddsCalculator', () => {
     let player1Cards: CardGroup = CardGroup.fromString('5d6d');
     let player2Cards: CardGroup = CardGroup.fromString('4h4c');
     let board: CardGroup = CardGroup.fromString('3d,4d,7d');
-    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], board);
+    let result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+    );
 
     expect(result.equities[0].getEquity()).to.equal(100);
     expect(result.equities[1].getEquity()).to.equal(0);
@@ -85,11 +98,40 @@ describe('OddsCalculator', () => {
     expect(result.equities[1].getEquity()).to.be.within(31, 33);
   });
 
+  it('flop only board with dead cards', () => {
+    let player1Cards: CardGroup = CardGroup.fromString('5d6d');
+    let player2Cards: CardGroup = CardGroup.fromString('4h4c');
+    let deadCards: CardGroup = CardGroup.fromString('4sKs');
+    let board: CardGroup = CardGroup.fromString('3d,4d,7d');
+    let result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+    );
+
+    expect(result.equities[0].getEquity()).to.equal(100);
+    expect(result.equities[1].getEquity()).to.equal(0);
+
+    player1Cards = CardGroup.fromString('5d6d');
+    player2Cards = CardGroup.fromString('4h4c');
+    board = CardGroup.fromString('3d,4d,9d');
+    result = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+      deadCards,
+    );
+
+    expect(result.equities[0].getEquity()).to.be.within(67, 71);
+    expect(result.equities[1].getEquity()).to.be.within(29, 33);
+  });
+
   it('one card left', () => {
     let player1Cards: CardGroup = CardGroup.fromString('AsKc'); // 4 queens / 44 cards left
     let player2Cards: CardGroup = CardGroup.fromString('AdAh');
     let board: CardGroup = CardGroup.fromString('2d,Jd,Tc,4s');
-    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], board);
+    let result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+    );
 
     expect(result.equities[0].getEquity()).to.equal(9);
     expect(result.equities[1].getEquity()).to.equal(91);
@@ -123,7 +165,10 @@ describe('OddsCalculator', () => {
     let player1Cards: CardGroup = CardGroup.fromString('AsKc');
     let player2Cards: CardGroup = CardGroup.fromString('AdAh');
     let board: CardGroup = CardGroup.fromString('2d,Kd,8c');
-    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], board);
+    let result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      board,
+    );
 
     expect(result.equities[0].getEquity()).to.equal(9);
     expect(result.equities[1].getEquity()).to.equal(91);
@@ -140,7 +185,13 @@ describe('OddsCalculator', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, undefined, 10000);
+    const result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      undefined,
+      undefined,
+      undefined,
+      10000,
+    );
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -156,7 +207,13 @@ describe('OddsCalculator', () => {
   it('public methods', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
-    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, undefined, 10);
+    let result: OddsCalculator = OddsCalculator.calculate(
+      [player1Cards, player2Cards],
+      undefined,
+      undefined,
+      undefined,
+      10,
+    );
 
     expect(result.getHandRank(1)).to.be.an.instanceof(HandRank);
     expect(result.getHandRank(0)).to.be.an.instanceof(HandRank);

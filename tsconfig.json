@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "removeComments": false,
     "declaration": true,
-    "declarationDir": "./dts/"
+    "declarationDir": "./dts/",
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules",

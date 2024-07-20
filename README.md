@@ -6,7 +6,7 @@
 
 A pre-flop and post-flop odds calculator for Texas Holdem.
 
-For a live demonstration of this library in action, check out [shortdeck.gg](https://shortdeck.gg)!
+Forked from: https://github.com/rundef/node-poker-odds-calculator
 
 ## Installation
 
@@ -60,7 +60,7 @@ console.log(`Player #2 - ${player2Cards} - ${result.equities[1].getEquity()}%`);
 
 To use Short Deck:
 ```js
-const result = OddsCalculator.calculate([player1Cards, player2Cards], board, 'short');
+const result = OddsCalculator.calculate([player1Cards, player2Cards], board, undefined, 'short');
 ```
 
 ## License

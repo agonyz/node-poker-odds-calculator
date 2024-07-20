@@ -2,7 +2,7 @@
  * Tests for HandRank class
  */
 import { expect } from 'chai';
-import { CardGroup, FullDeckGame, HandRank, Rank } from '../src/index';
+import { CardGroup, FullDeckGame, HandRank, Rank } from '../src';
 
 describe('HandRank', () => {
   it('detects royal flush', () => {
@@ -304,7 +304,9 @@ describe('HandRank', () => {
     expect(handrank.getHighCards()[3].getRank()).to.equal(Rank.SEVEN);
     expect(handrank.getHighCards()[4].getRank()).to.equal(Rank.ACE);
 
-    expect(handrank.toString()).to.equal('Two pairs: jacks and sevens (A high)');
+    expect(handrank.toString()).to.equal(
+      'Two pairs: jacks and sevens (A high)',
+    );
 
     // double paired board
     board = CardGroup.fromString('5h,5s,7c,6c,7d');
@@ -319,7 +321,9 @@ describe('HandRank', () => {
     expect(handrank.getHighCards()[3].getRank()).to.equal(Rank.SEVEN);
     expect(handrank.getHighCards()[4].getRank()).to.equal(Rank.SIX);
 
-    expect(handrank.toString()).to.equal('Two pairs: jacks and sevens (6 high)');
+    expect(handrank.toString()).to.equal(
+      'Two pairs: jacks and sevens (6 high)',
+    );
   });
 
   it('detects pair', () => {
@@ -354,7 +358,10 @@ describe('HandRank', () => {
     const rules: FullDeckGame = new FullDeckGame();
     const board: CardGroup = CardGroup.fromString('2c,4c,Jd,9d,6d');
     const hand: CardGroup = CardGroup.fromString('KcQc');
-    const handrank: HandRank = HandRank.evaluate(rules, <CardGroup> hand.concat(board));
+    const handrank: HandRank = HandRank.evaluate(
+      rules,
+      <CardGroup>hand.concat(board),
+    );
 
     expect(handrank.getRank()).to.equal(rules.HIGH_CARD);
     expect(handrank.getHighCards().length).to.equal(5);

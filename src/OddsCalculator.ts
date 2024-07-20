@@ -32,14 +32,14 @@ export class HandEquity {
     if (this.possibleHandsCount === 0) {
       return 0;
     }
-    return Math.round(this.bestHandCount * 100.0 / this.possibleHandsCount);
+    return Math.round((this.bestHandCount * 100.0) / this.possibleHandsCount);
   }
 
   public getTiePercentage(): number {
     if (this.possibleHandsCount === 0) {
       return 0;
     }
-    return Math.round(this.tieHandCount * 100.0 / this.possibleHandsCount);
+    return Math.round((this.tieHandCount * 100.0) / this.possibleHandsCount);
   }
 
   public toString(): string {
@@ -60,23 +60,41 @@ export class OddsCalculator {
   protected iterations: number;
   protected elapsedTime: number;
 
-  protected constructor(equities: HandEquity[], handranks: HandRank[], iterations: number, elapsedTime: number) {
+  protected constructor(
+    equities: HandEquity[],
+    handranks: HandRank[],
+    iterations: number,
+    elapsedTime: number,
+  ) {
     this.equities = equities;
     this.handranks = handranks;
     this.iterations = iterations;
     this.elapsedTime = elapsedTime;
   }
 
-  public static calculate(cardgroups: CardGroup[], board?: CardGroup, gameVariant?: string, iterations?: number): OddsCalculator {
+  public static calculate(
+    cardgroups: CardGroup[],
+    board?: CardGroup,
+    deadCards?: CardGroup,
+    gameVariant?: string,
+    iterations?: number,
+  ): OddsCalculator {
     if (board && [0, 3, 4, 5].indexOf(board.length) === -1) {
       throw new Error('The board must contain 0, 3, 4 or 5 cards');
     }
 
-    const allGroups: CardGroup[] = board ? cardgroups.concat(board) : cardgroups;
+    const allGroups: CardGroup[] = board
+      ? cardgroups.concat(board)
+      : cardgroups;
     let allCards: Card[] = [];
     allGroups.forEach((group: CardGroup) => {
       allCards = allCards.concat(group);
     });
+
+    if (deadCards) {
+      allCards = allCards.concat(deadCards);
+    }
+
     // Invalid card values
     if (gameVariant === 'short') {
       allCards.forEach((card: Card) => {
@@ -85,6 +103,7 @@ export class OddsCalculator {
         }
       });
     }
+
     const uniqCards: Card[] = _.uniqBy(allCards, (card: Card) => {
       return card.getRank() + '-' + card.getSuit();
     });
@@ -122,6 +141,15 @@ export class OddsCalculator {
             }
           }
 
+          if (deadCards) {
+            for (const deadCard of deadCards) {
+              if (c.equals(deadCard)) {
+                isUsed = true;
+                break;
+              }
+            }
+          }
+
           if (!isUsed) {
             for (const cardgroup of cardgroups) {
               for (const card of cardgroup) {
@@ -147,12 +175,17 @@ export class OddsCalculator {
 
     // Figure out hand ranking
     handranks = cardgroups.map((cardgroup: CardGroup): HandRank => {
-      return HandRank.evaluate(game, board ? cardgroup.concat(board) : cardgroup);
+      return HandRank.evaluate(
+        game,
+        board ? cardgroup.concat(board) : cardgroup,
+      );
     });
 
-    const equities: HandEquity[] = cardgroups.map((cardgroup: CardGroup): HandEquity => {
-      return new HandEquity();
-    });
+    const equities: HandEquity[] = cardgroups.map(
+      (cardgroup: CardGroup): HandEquity => {
+        return new HandEquity();
+      },
+    );
 
     const selectWinners: Function = (simulatedBoard: CardGroup): void => {
       let highestRanking: HandRank = null;
@@ -160,7 +193,7 @@ export class OddsCalculator {
       for (let i: number = 0; i < cardgroups.length; i += 1) {
         const handranking: HandRank = HandRank.evaluate(
           game,
-          cardgroups[i].concat(simulatedBoard)
+          cardgroups[i].concat(simulatedBoard),
         );
         const isBetter: number = highestRanking
           ? handranking.compareTo(highestRanking)
@@ -179,9 +212,9 @@ export class OddsCalculator {
         let isTie: boolean = false;
 
         if (highestRankingIndex.length > 1) {
-          isTie = (highestRankingIndex.indexOf(i) > -1);
+          isTie = highestRankingIndex.indexOf(i) > -1;
         } else {
-          isWinning = (highestRankingIndex.indexOf(i) > -1);
+          isWinning = highestRankingIndex.indexOf(i) > -1;
         }
 
         equities[i].addPossibility(isWinning, isTie);
@@ -213,14 +246,19 @@ export class OddsCalculator {
 
         do {
           index5 = _.random(0, remainingCount - 1);
-        } while (index5 === index1 || index5 === index2 || index5 === index3 || index5 === index4);
+        } while (
+          index5 === index1 ||
+          index5 === index2 ||
+          index5 === index3 ||
+          index5 === index4
+        );
 
         const simulatedBoard: CardGroup = CardGroup.fromCards([
           remainingCards[index1],
           remainingCards[index2],
           remainingCards[index3],
           remainingCards[index4],
-          remainingCards[index5]
+          remainingCards[index5],
         ]);
 
         selectWinners(simulatedBoard);
@@ -230,14 +268,18 @@ export class OddsCalculator {
       selectWinners(board);
     } else if (board.length === 4) {
       for (const c of remainingCards) {
-        const simulatedBoard: CardGroup = board.concat(CardGroup.fromCards([c]));
+        const simulatedBoard: CardGroup = board.concat(
+          CardGroup.fromCards([c]),
+        );
         iterations += 1;
         selectWinners(simulatedBoard);
       }
     } else if (board.length === 3) {
       for (let a: number = 0; a < remainingCount; a += 1) {
         for (let b: number = a + 1; b < remainingCount; b += 1) {
-          const simulatedBoard: CardGroup = board.concat(CardGroup.fromCards([remainingCards[a], remainingCards[b]]));
+          const simulatedBoard: CardGroup = board.concat(
+            CardGroup.fromCards([remainingCards[a], remainingCards[b]]),
+          );
           iterations += 1;
           selectWinners(simulatedBoard);
         }
@@ -245,7 +287,12 @@ export class OddsCalculator {
     }
 
     const jobEndedAt: number = +new Date();
-    return new OddsCalculator(equities, handranks, iterations, jobEndedAt - jobStartedAt);
+    return new OddsCalculator(
+      equities,
+      handranks,
+      iterations,
+      jobEndedAt - jobStartedAt,
+    );
   }
 
   public getIterationCount(): number {

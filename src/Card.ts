@@ -14,9 +14,7 @@ export class Suit {
   public static SPADE: number = 4;
 
   public static all(): number[] {
-    return [
-      Suit.CLUB, Suit.DIAMOND, Suit.HEART, Suit.SPADE
-    ];
+    return [Suit.CLUB, Suit.DIAMOND, Suit.HEART, Suit.SPADE];
   }
 
   public static fromString(s: string): number {
@@ -65,7 +63,7 @@ export class Rank {
     { singular: 'jack', plural: 'jacks' },
     { singular: 'queen', plural: 'queens' },
     { singular: 'king', plural: 'kings' },
-    { singular: 'ace', plural: 'aces' }
+    { singular: 'ace', plural: 'aces' },
   ];
 
   public static fromString(s: string): number {
@@ -91,8 +89,19 @@ export class Rank {
 
   public all(): number[] {
     return [
-      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
-      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
+      Rank.TWO,
+      Rank.THREE,
+      Rank.FOUR,
+      Rank.FIVE,
+      Rank.SIX,
+      Rank.SEVEN,
+      Rank.EIGHT,
+      Rank.NINE,
+      Rank.TEN,
+      Rank.JACK,
+      Rank.QUEEN,
+      Rank.KING,
+      Rank.ACE,
     ];
   }
 }
@@ -113,7 +122,7 @@ export class Card {
     }
     return new Card(
       Rank.fromString(tmp[0].toLowerCase()),
-      Suit.fromString(tmp[1].toLowerCase())
+      Suit.fromString(tmp[1].toLowerCase()),
     );
   }
 
@@ -126,10 +135,14 @@ export class Card {
   }
 
   public equals(c: Card): boolean {
-    return (this.getRank() === c.getRank() && this.getSuit() === c.getSuit());
+    return this.getRank() === c.getRank() && this.getSuit() === c.getSuit();
   }
 
-  public toString(suit: boolean = true, full?: boolean, plural?: boolean): string {
+  public toString(
+    suit: boolean = true,
+    full?: boolean,
+    plural?: boolean,
+  ): string {
     if (full) {
       if (plural) {
         return Rank.names[this.rank].plural;

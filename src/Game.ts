@@ -27,8 +27,19 @@ export interface IGame {
 export class FullDeckRank extends Rank {
   public all(): number[] {
     return [
-      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
-      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
+      Rank.TWO,
+      Rank.THREE,
+      Rank.FOUR,
+      Rank.FIVE,
+      Rank.SIX,
+      Rank.SEVEN,
+      Rank.EIGHT,
+      Rank.NINE,
+      Rank.TEN,
+      Rank.JACK,
+      Rank.QUEEN,
+      Rank.KING,
+      Rank.ACE,
     ];
   }
 }
@@ -58,14 +69,20 @@ export class FullDeckGame implements IGame {
 export class ShortDeckRank extends Rank {
   public all(): number[] {
     return [
-      Rank.SIX, Rank.SEVEN, Rank.EIGHT, Rank.NINE, Rank.TEN,
-      Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
+      Rank.SIX,
+      Rank.SEVEN,
+      Rank.EIGHT,
+      Rank.NINE,
+      Rank.TEN,
+      Rank.JACK,
+      Rank.QUEEN,
+      Rank.KING,
+      Rank.ACE,
     ];
   }
 }
 
 export class ShortDeckGame implements IGame {
-
   public HIGH_CARD: number = 1;
   public PAIR: number = 2;
   public TWO_PAIRS: number = 3;
